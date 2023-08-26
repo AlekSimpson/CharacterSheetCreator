@@ -1,9 +1,12 @@
+mod sheet_element;
+
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use sycamore::futures::spawn_local_scoped;
 use sycamore::prelude::*;
 use sycamore::rt::Event;
 use wasm_bindgen::prelude::*;
+use crate::app::sheet_element::SheetElement;
 
 #[wasm_bindgen]
 extern "C" {
@@ -89,7 +92,3 @@ pub fn App<G: Html>(cx: Scope) -> View<G> {
         }
     }
 }
-
-
-
-// choose sheet to load
