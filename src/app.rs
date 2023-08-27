@@ -1,4 +1,4 @@
-mod sheet_element;
+//mod sheet_element;
 
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
@@ -6,7 +6,7 @@ use sycamore::futures::spawn_local_scoped;
 use sycamore::prelude::*;
 use sycamore::rt::Event;
 use wasm_bindgen::prelude::*;
-use crate::app::sheet_element::SheetElement;
+//use crate::app::sheet_element::SheetElement;
 
 #[wasm_bindgen]
 extern "C" {
@@ -42,7 +42,6 @@ pub fn App<G: Html>(cx: Scope) -> View<G> {
 
     view! { cx,
         main(class="container") {
-            SheetElement {}
             //div(class="row") {
             //    a(href="https://tauri.app",target="_blank") {
             //        img(src="public/tauri.svg",class="logo tauri",alt="Tauri logo")
