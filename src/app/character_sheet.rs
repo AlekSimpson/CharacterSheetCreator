@@ -7,33 +7,52 @@ enum Defense {
     POISON
 }
 
-//enum CoreStat {
-//    stren{value: i64},
-//    dex{value: i64},
-//    con{value: i64},
-//    int{value: i64},
-//    wis{value: i64},
-//    rizz{value: i64}
-//}
+enum Size {
+    SMALL,
+    MEDIUM,
+    LARGE
+}
 
+enum Language {
+    COMMON,
+    ELVISH
+}
+
+// note: I have lumped traits in with features here
 struct Feature {
-    // TODO
+    name: String,
+    description: String,
+    reference: Optional<String>
 }
-struct Trait {
-    // TODO
-}
+
 struct Description {
     // TODO
 }
+
+struct HitPoints {
+    hit_dice: Dice
+    // TODO: in CharacterSheet impl remember to write functions for hitpoints used after 1st level and at 1st level
+}
+
 struct Class {
-    // TODO
+    name: String,
+    features: Vec<Feature>,
+    hit_points: HitPoints,
+    proficincies: Vec<String>
 }
 struct Race {
-    // TODO
+    name: String,
+    asi: Map<String, i64>,
+    features: Vec<Feature>,
+    max_age: i64,
+    size: Size,
+    base_walk_speed: i64,
+    languages: Vec<Language>
 }
 
 pub struct CharacterSheet {
-    //core_stats: Map<String, CoreStat>,
+    name: String,
+    age: i64,
     core_stats: Map<String, i64>,
     walking_speed: u64,
     ac: u64,
@@ -51,7 +70,8 @@ pub struct CharacterSheet {
     inventory: Vec<Tool>,
     features: Vec<Feature>,
     traits: Vec<Trait>,
-    description: Description
+    description: Description,
+    feats: Vec<Feature>
 }
 
 impl CharacterSheet {}
