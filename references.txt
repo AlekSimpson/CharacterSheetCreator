@@ -1,3 +1,7 @@
 References:
 
-https://www.dandwiki.com/wiki/5e_Race_Design_Guide
+Race Design Guide:
+- https://www.dandwiki.com/wiki/5e_Race_Design_Guide
+
+Class Design Guide:
+- https://www.dandwiki.com/wiki/5e_Class_Design_Guide

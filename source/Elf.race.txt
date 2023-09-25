@@ -1,0 +1,15 @@
+abi
+age
+alignment
+size
+speed
+languages
+subrace
+
+vision
+resistance
+immunity
+fp # firearm proficiency
+
+
+special_traits {}
