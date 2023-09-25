@@ -1,5 +1,3 @@
-pub struct Tool {
-    // TODO
-}
+trait Tool {
 
-impl Tool {}
+}
