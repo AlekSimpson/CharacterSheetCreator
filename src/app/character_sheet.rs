@@ -113,30 +113,31 @@ impl CharacterSheet {
         traits: Vec<Trait>, background: String,
         characteristics: Characteristics, feats: Vec<Feature>
     ) -> Self {
-        CharacterSheet {
-            name: name, 
-            age: age,
-            core_stats: core_stats, 
-            walking_speed: walking_speed,
-            ac: ac, 
-            initiative: initiative,
-            proficiencies: proficiencies,
-            level: level,
-            class: class,
-            race: race,
-            max_hp: max_hp,
-            curr_hp: curr_hp,
-            defenses: defenses,
-            saving_throws: saving_throws,
-            senses: senses,
-            skils: skills,
-            inventory: inventory,
-            features: features,
-            traits: traits,
-            background: background,
-            characteristics: characteristics, 
-            feats: feats
-        }
+
+        //CharacterSheet {
+        //    name: name, 
+        //    age: age,
+        //    core_stats: core_stats, 
+        //    walking_speed: walking_speed,
+        //    ac: ac, 
+        //    initiative: initiative,
+        //    proficiencies: proficiencies,
+        //    level: level,
+        //    class: class,
+        //    race: race,
+        //    max_hp: max_hp,
+        //    curr_hp: curr_hp,
+        //    defenses: defenses,
+        //    saving_throws: saving_throws,
+        //    senses: senses,
+        //    skils: skills,
+        //    inventory: inventory,
+        //    features: features,
+        //    traits: traits,
+        //    background: background,
+        //    characteristics: characteristics, 
+        //    feats: feats
+        //}
     }
 
     pub fn roll_hit_dice() {
@@ -153,13 +154,13 @@ impl CharacterSheet {
         }
     }
 
-    pub fn level_up() {
-        // increase level
-        level += 1;
-        // reroll hit dice
-        roll_hit_dice();
-        // if spell caster add new spell slots
-        // levels 4, 8, 12, 16, 19 you can choose a feat or add two points to any score you wish
-        // levels 5, 9, 13 and 17 your proficieny bonus increases by one
-    }
+    //pub fn level_up() {
+    //    // increase level
+    //    level += 1;
+    //    // reroll hit dice
+    //    roll_hit_dice();
+    //    // if spell caster add new spell slots
+    //    // levels 4, 8, 12, 16, 19 you can choose a feat or add two points to any score you wish
+    //    // levels 5, 9, 13 and 17 your proficieny bonus increases by one
+    //}
 }
