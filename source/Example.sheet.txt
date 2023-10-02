@@ -1,32 +1,37 @@
 NAME: INPUT
 CLASS: INPUT
 LEVEL: INPUT
-BACKGROUND:?
+BACKGROUND: INPUT
 RACE: INPUT
 ALIGNMENT: INPUT
+LANGUAGE: !! GIVEN/INPUT (SOME LANGUAGES ARE GIVEN BY RACE/BACKGROUND AND ONE OTHER COULD BE PLAYER CHOICE)
 XP: ?? ASK SAM
+
 STR: !! 4d6 and take the lowest roll 
-STR_MOD: !! (CHAR - 10)/2
+STR_MOD: !! (STR - 10)/2
 DEX: !! 4d6 and take the lowest roll 
-DEX_MOD: !! (CHAR - 10)/2
+DEX_MOD: !! (DEX - 10)/2
 CON: !! 4d6 and take the lowest roll
-CON_MOD: !! (CHAR - 10)/2
+CON_MOD: !! (CON - 10)/2
 INT: !! 4d6 and take the lowest roll
-INT_MOD: !! (CHAR - 10)/2
+INT_MOD: !! (INT - 10)/2
 WIS: !! 4d6 and take the lowest roll
-WIS_MOD: !! (CHAR - 10)/2
+WIS_MOD: !! (WIS - 10)/2
 CHAR: !! 4d6 and take the lowest roll
 CHAR_MOD: !! (CHAR - 10)/2
-PASSIVE_WIS: !!
+
+PASSIVE_WIS: !! 10 + WIS_MOD
 INSPIRATION: INPUT
-PROFICIENCY_BONUS: !!
-SAVING_THROWS: !!
+PROFICIENCY_BONUS: !! ceil(1 + [(1/4) * LEVEL])
+
+SAVING_THROWS: !! d20 + MOD
 - STR:
 - DEX:
 - CON: 
 - INT: 
 - WIS:
 - CHAR:
+
 SKILLS: !!
 - ACROBATICS: (DEX_MOD)
 - ANIMAL_HANDLING: (WIS_MOD)
@@ -46,13 +51,14 @@ SKILLS: !!
 - SLEIGHT_OF_HAND: (DEX_MOD)
 - STEALTH: (DEX_MOD)
 - SURVIVAL: (??)
-AC: !!
+
+AC: !! ARMOR_VAL + DEX_MOD
 INITIATIVE: !! D20 + DEX_MOD
 SPEED: !! RACE_BASE_SPEED + DEX_MOD
 CURR_HP: 
 MAX_HP: !! 
-HIT_DICE: !!
-ATTACKS: !!
+HIT_DICE: !! GIVEN IN CLASS
+ATTACKS: !! 
 SPELL_CASTING: !!
 FEATURES: !!
 TRAITS: !!
