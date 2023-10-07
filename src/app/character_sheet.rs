@@ -67,11 +67,13 @@ impl Dice {
         }
     }
 
-    pub fn roll() -> Vec<i32> {
+    pub fn roll(sum_roll: bool) -> Vec<i32> {
         let mut rng = rand::thread_rng();
         let rolls: Vec<i32> = vec![0; amount];
         rolls.iter().map(|x| x + rng.gen(1..dice_type));
-        //return rolls.iter().fold(0, |acc, x| acc + x);
+        if sum_roll {
+            return rolls.iter().fold(0, |acc, x| acc + x);
+        }
         return rolls;
     }
 }
@@ -81,7 +83,9 @@ struct Class {
     features: Vec<Feature>,
     hit_dice: Dice,
     proficincies: Vec<String>
+    has_darkvision: bool
 }
+
 struct Race {
     name: String,
     asi: Map<String, i64>,
@@ -89,34 +93,44 @@ struct Race {
     max_age: i64,
     size: Size,
     base_walk_speed: i64,
-    languages: Vec<Language>
+    languages: Vec<Language>,
+    defenses: Vec<Language>
+}
+
+struct Senses {
+    passive_wis: i32,
+    passive_int: i32,
+    darkvision: Option<i32>,  // inhereted from character race
+    // TODO: possibly more things can be added here but I don't know what else rn
 }
 
 pub struct CharacterSheet {
-    name: String,
-    core_stats: Map<String, Stat>,
-    walking_speed: u64,
-    ac: u64,
-    initiative: i64,
-    proficiencies: Vec<String>,
-    level: i64,
-    class: Class,
-    race: Race,
-    max_hp: i64,
-    curr_hp: i64, 
-    defenses: Vec<Defense>,
-    saving_throws: Map<String, i64>,
-    senses: Map<String, i64>,
-    skills: Map<String, i64>,
-    inventory: Vec<Tool>,
-    background: String,
-    characteristics: Characteristics,
-    feats: Vec<Feature>,
+    name: String,                     //
+    core_stats: Map<String, Stat>,    //
+    walking_speed: u64,               //
+    ac: u64,                          //
+    initiative: i64,                  //
+    proficiencies: Vec<String>
+    level: i64,                       //
+    class: Class,                     //
+    race: Race,                       //
+    max_hp: i64,                      //
+    curr_hp: i64,                     //
+    saving_throws: Map<String, i64>,  
+    senses: Map<String, i64>,         //
+    skills: Map<String, i64>,         //
+    inventory: Vec<Tool>,             //
+    background: String,               //
+    characteristics: Characteristics, //
+//    feats: Vec<Feature>, TODO: implement this later
     equipped: Vec<Tool>
 }
 
 impl CharacterSheet {
-    pub fn new(name: String, background: String, characteristics: Characteristics, inventory: Vec<Tool>, ) -> Self {
+    pub fn new(
+        name: String, background: String, characteristics: Characteristics, inventory: Vec<Tool>, 
+        background: String, race: Race, class: Class
+    ) -> Self {
         // Generate core stats
         let core_stats = HashMap::from([
             ("STR",  roll_stat()),
@@ -151,10 +165,32 @@ impl CharacterSheet {
         let level = 1;
         let initiative = Dice::new(1, 20).roll() + core_stats.clone().get("DEX").modifier();
         let max_hp = class.hit_dice.roll() + core_stats.clone().get("CON").modifier;
-        let passive_wis = 10 + core_stats.clone().get("WIS").modifier;
+        let senses = get_senses(&class);
         let proficiency_bonus = (0.25 * level) + 1).ceil();
         let ac = get_ac();
         let speed = race.base_walk_speed + core_stats.clone().get("DEX").modifier; 
+
+
+        // initialize sheet
+        CharacterSheet {}
+    }
+
+    pub fn get_senses(class: &Class) -> Senses {
+        let passive_wis = 10 + core_stats.clone().get("WIS").modifier;
+        let passive_int = 10 + core_stats.clone().get("INT").modifier;
+        if class.has_darkvision {
+            Senses {
+                passive_wis: passive_wis, 
+                passive_int: passive_int,
+                darkvision: Some(60)
+            }
+        }else {
+            Senses {
+                passive_wis: passive_wis,
+                passive_int: passive_int,
+                darkvision: None
+            }
+        }
     }
 
     pub fn get_ac() -> u64 {
