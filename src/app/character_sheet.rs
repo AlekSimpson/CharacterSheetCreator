@@ -84,6 +84,7 @@ struct Class {
     hit_dice: Dice,
     proficincies: Vec<String>
     has_darkvision: bool
+    proficieny_bonuses: Vec<String>
 }
 
 struct Race {
@@ -95,6 +96,7 @@ struct Race {
     base_walk_speed: i64,
     languages: Vec<Language>,
     defenses: Vec<Language>
+    proficiency_bonuses: Vec<String>
 }
 
 struct Senses {
@@ -105,31 +107,30 @@ struct Senses {
 }
 
 pub struct CharacterSheet {
-    name: String,                     //
-    core_stats: Map<String, Stat>,    //
-    walking_speed: u64,               //
-    ac: u64,                          //
-    initiative: i64,                  //
-    proficiencies: Vec<String>
-    level: i64,                       //
-    class: Class,                     //
-    race: Race,                       //
-    max_hp: i64,                      //
-    curr_hp: i64,                     //
-    saving_throws: Map<String, i64>,  
-    senses: Map<String, i64>,         //
-    skills: Map<String, i64>,         //
-    inventory: Vec<Tool>,             //
-    background: String,               //
-    characteristics: Characteristics, //
-//    feats: Vec<Feature>, TODO: implement this later
-    equipped: Vec<Tool>
+    name: String,                     
+    core_stats: Map<String, Stat>,    
+    walking_speed: u64,               
+    ac: u64,                          
+    initiative: i64,                  
+    proficiencies: Vec<String>        
+    level: i32,                       
+    class: Class,                     
+    race: Race,                       
+    max_hp: i64,                      
+    curr_hp: i64,                     
+    saving_throws: Map<String, i32>,  
+    senses: Map<String, i32>,         
+    skills: Map<String, i32>,         
+    inventory: Vec<Tool>,             
+    background: String,               
+    characteristics: Characteristics, 
+    equipped: Vec<Tool>               
 }
 
 impl CharacterSheet {
     pub fn new(
         name: String, background: String, characteristics: Characteristics, inventory: Vec<Tool>, 
-        background: String, race: Race, class: Class
+        background: String, race: Race, class: Class, equipped
     ) -> Self {
         // Generate core stats
         let core_stats = HashMap::from([
@@ -138,28 +139,37 @@ impl CharacterSheet {
             ("CON",  roll_stat()),
             ("INT",  roll_stat()),
             ("WIS",  roll_stat()),
-            ("CHAR", roll_stat()),
+            ("CHA",  roll_stat()),
         ]);
 
         let skills = HashMap::from([
-            ("ACROBATICS", core_stats.clone().get("DEX")),
-            ("ANIMAL_HANDLING", core_stats.clone().get("WIS")),
-            ("ARCANA", core_stats.clone().get("INT")),
-            ("ATHLETICS", core_stats.clone().get("STR")),
-            ("DECEPTION", core_stats.clone().get("CHAR")),
-            ("HISTORY", core_stats.clone().get("INT")),
-            ("INSIGHT", core_stats.clone().get("WIS")),
-            ("INTIMIDATION", core_stats.clone().get("CHAR")),
-            ("INVESTIGATION", core_stats.clone().get("INT")),
-            ("MEDICINE", core_stats.clone().get("WIS")),
-            ("NATURE", core_stats.clone().get("INT")),
-            ("PERCEPTION", core_stats.clone().get("WIS")),
-            ("PERFORMANCE", core_stats.clone().get("CHAR")),
-            ("PERSUASION", core_stats.clone().get("CHAR")),
-            ("RELIGION", core_stats.clone().get("INT")),
-            ("SLEIGHT_OF_HAND", core_stats.clone().get("DEX")),
-            ("STEALTH", core_stats.clone().get("DEX")),
-            ("SURVIVAL", core_stats.clone().get("WIS")),
+            ("ACROBATICS",      core_stats.clone().get("DEX").modifier),
+            ("ANIMAL_HANDLING", core_stats.clone().get("WIS").modifier),
+            ("ARCANA",          core_stats.clone().get("INT").modifier),
+            ("ATHLETICS",       core_stats.clone().get("STR").modifier),
+            ("DECEPTION",       core_stats.clone().get("CHA").modifier),
+            ("HISTORY",         core_stats.clone().get("INT").modifier),
+            ("INSIGHT",         core_stats.clone().get("WIS").modifier),
+            ("INTIMIDATION",    core_stats.clone().get("CHA").modifier),
+            ("INVESTIGATION",   core_stats.clone().get("INT").modifier),
+            ("MEDICINE",        core_stats.clone().get("WIS").modifier),
+            ("NATURE",          core_stats.clone().get("INT").modifier),
+            ("PERCEPTION",      core_stats.clone().get("WIS").modifier),
+            ("PERFORMANCE",     core_stats.clone().get("CHA").modifier),
+            ("PERSUASION",      core_stats.clone().get("CHA").modifier),
+            ("RELIGION",        core_stats.clone().get("INT").modifier),
+            ("SLEIGHT_OF_HAND", core_stats.clone().get("DEX").modifier),
+            ("STEALTH",         core_stats.clone().get("DEX").modifier),
+            ("SURVIVAL",        core_stats.clone().get("WIS").modifier),
+        ]);
+
+        let saving_throws = HashMap::from([
+            ("STR", get_saving_throw(core_stats.clone().get("STR").modifier)),
+            ("DEX", get_saving_throw(core_stats.clone().get("DEX").modifier)),
+            ("CON", get_saving_throw(core_stats.clone().get("CON").modifier)),
+            ("INT", get_saving_throw(core_stats.clone().get("INT").modifier)),
+            ("WIS", get_saving_throw(core_stats.clone().get("WIS").modifier)),
+            ("CHA", get_saving_throw(core_stats.clone().get("CHA").modifier)),
         ]);
 
         let level = 1;
@@ -169,10 +179,43 @@ impl CharacterSheet {
         let proficiency_bonus = (0.25 * level) + 1).ceil();
         let ac = get_ac();
         let speed = race.base_walk_speed + core_stats.clone().get("DEX").modifier; 
-
+        let proficincies = get_proficiencies(&race, &class);
 
         // initialize sheet
-        CharacterSheet {}
+        CharacterSheet {
+            name: name,                     
+            core_stats: core_stats,    
+            walking_speed: walking_speed,               
+            ac: ac,                          
+            initiative: initiative,                  
+            proficiencies: proficincies       
+            level: level,                       
+            class: class,                     
+            race: race,                       
+            max_hp: max_hp,                      
+            curr_hp: curr_hp,                     
+            saving_throws: saving_throws,  
+            senses: senses,         
+            skills: skills,         
+            inventory: inventory,             
+            background: background,               
+            characteristics: characteristics, 
+            equipped: equipped
+        }
+    }
+
+    pub fn get_proficiencies(race: &Race, class: &Class) -> Vec<String> {
+        let mut race_profs = race.proficincies.clone();
+        let mut class_profs = class.proficincies.clone();
+        let mut profs = race_profs.extend(class_profs);
+        profs.sort_unstable(); // sort list
+        profs.dedup(); // remove duplicates
+        return profs;
+    }
+ 
+    pub fn get_saving_throw(modifier: i32) -> i32 {
+        let roll = Dice::roll(1, 20);
+        return roll + modifier;
     }
 
     pub fn get_senses(class: &Class) -> Senses {
@@ -182,7 +225,7 @@ impl CharacterSheet {
             Senses {
                 passive_wis: passive_wis, 
                 passive_int: passive_int,
-                darkvision: Some(60)
+                darkvision: Some(60) // 60 feet by default right now
             }
         }else {
             Senses {
@@ -209,12 +252,13 @@ impl CharacterSheet {
                 min = roll;
             }
         }
+        let stat = rolls.iter().sum() - min;
 
-        return Stat::new(min, roll_modifier(min));
+        return Stat::new(stat, roll_modifier(stat));
     }
 
     pub fn roll_modifier(stat: i32) -> i32 {
-        return (stat - 10)/2;
+        return ((stat - 10)/2).ceil();
     }
 
     pub fn roll_hit_dice() {
