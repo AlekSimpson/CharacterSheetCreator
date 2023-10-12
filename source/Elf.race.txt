@@ -1,15 +1,14 @@
-abi
-age
-alignment
-size
-speed
-languages
-subrace
+ABI
+AGE
+ALIGNMENT
+SIZE
+SPEED
+LANGUAGES
+SUBRACES
 
-vision
-resistance
-immunity
-fp # firearm proficiency
+VISION
+RESISTANCE
+IMMUNITY
 
 
-special_traits {}
+SPECIAL_TRAITS:
