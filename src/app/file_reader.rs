@@ -1,5 +1,7 @@
+use std::{fs, io, path::PathBuf};
+
 struct File_Reader {
-    filename: String
+    filename: &str
 }
 
 impl File_Reader {
@@ -11,8 +13,12 @@ impl File_Reader {
         return input; 
     }
 
-    pub fn get_sheets() -> Vec<String> {
-
+    fn get_files_in_dir() -> io::Result<Vec<PathBuf>> {
+        let entries = fs::read_dir(filename)?;
+        let all: Vec<PathBuf> = entries
+            .filter_map(|entry| Some(entry.ok()?.path()))
+            .collect();
+        Ok(all)
     }
 }
 

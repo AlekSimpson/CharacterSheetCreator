@@ -130,7 +130,7 @@ pub struct CharacterSheet {
 impl CharacterSheet {
     pub fn new(
         name: String, background: String, characteristics: Characteristics, inventory: Vec<Tool>, 
-        background: String, race: Race, class: Class, equipped
+        background: String, race: Race, class: Class, equipped: Vec<Tool>
     ) -> Self {
         // Generate core stats
         let core_stats = HashMap::from([
@@ -188,7 +188,7 @@ impl CharacterSheet {
             walking_speed: walking_speed,               
             ac: ac,                          
             initiative: initiative,                  
-            proficiencies: proficincies       
+            proficiencies: proficincies
             level: level,                       
             class: class,                     
             race: race,                       
@@ -221,18 +221,11 @@ impl CharacterSheet {
     pub fn get_senses(class: &Class) -> Senses {
         let passive_wis = 10 + core_stats.clone().get("WIS").modifier;
         let passive_int = 10 + core_stats.clone().get("INT").modifier;
-        if class.has_darkvision {
-            Senses {
-                passive_wis: passive_wis, 
-                passive_int: passive_int,
-                darkvision: Some(60) // 60 feet by default right now
-            }
-        }else {
-            Senses {
-                passive_wis: passive_wis,
-                passive_int: passive_int,
-                darkvision: None
-            }
+
+        Senses {
+            passive_wis: passive_wis,
+            passive_int: passive_int,
+            darkvision: if class.has_darkvision { Some(60) } else { None }
         }
     }
 
